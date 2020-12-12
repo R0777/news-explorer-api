@@ -9,8 +9,13 @@ router.get('/articles', getArticles);
 
 router.post('/articles', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required(),
+    keyword: Joi.string().required().min(2),
+    title: Joi.string().required().min(2),
+    text: Joi.string().required().min(2),
+    date: Joi.string().required(),
+    source: Joi.string().required().min(2),
     link: Joi.string().required().pattern(/^https?:\/\/(www\.)?(([\w#!:.?+=&%@!\-/])*)?\.(([\w#!:.?+=&%@!\-/])*)?#?/),
+    image: Joi.string().required().pattern(/^https?:\/\/(www\.)?(([\w#!:.?+=&%@!\-/])*)?\.(([\w#!:.?+=&%@!\-/])*)?#?/),
   }),
 }), createArticle);
 

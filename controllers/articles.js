@@ -1,11 +1,12 @@
-const Card = require('../models/article');
+const Article = require('../models/article');
 const ErrorNotFound = require('../errors/errorNotFound');
 const ForbiddenError = require('../errors/forbiddenError');
 
 const getArticles = async (req, res, next) => {
+  const { id } = req.user;
   try {
-    const cards = await Card.find({});
-    return res.status(200).send(cards);
+    const articles = await Article.find({ owner: id });
+    return res.status(200).send(articles);
   } catch (error) {
     return next(error);
   }
@@ -14,13 +15,13 @@ const getArticles = async (req, res, next) => {
 const deleteArticle = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const card = await Card.findOne({ _id: id });
-    if (!card) {
-      throw new ErrorNotFound('Такой карточки нет');
+    const article = await Article.findOne({ _id: id });
+    if (!article) {
+      throw new ErrorNotFound('Такой новости нет');
     }
-    if (card.owner === req.user.id) {
-      await Card.deleteOne(card);
-      return res.status(200).send({ message: 'Карточка удалена' });
+    if (article.owner === req.user.id) {
+      await Article.deleteOne(article);
+      return res.status(200).send({ message: 'Новость удалена' });
     }
     throw new ForbiddenError('Доступ запрещен');
   } catch (error) {
@@ -30,9 +31,13 @@ const deleteArticle = async (req, res, next) => {
 
 const createArticle = async (req, res, next) => {
   try {
-    const { name, link } = req.body;
+    const {
+      keyword, title, text, date, source, link, image,
+    } = req.body;
     const ownerId = req.user.id;
-    const card = await Card.create({ name, link, owner: ownerId });
+    const card = await Article.create({
+      keyword, title, text, date, source, link, image, owner: ownerId,
+    });
     return res.status(200).send(card);
   } catch (error) {
     return next(error);

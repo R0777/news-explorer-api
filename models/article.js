@@ -11,9 +11,14 @@ const articleSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
   },
+  text: {
+    type: String,
+    required: true,
+  },
   date: {
     type: String,
     required: true,
+    default: Date.now,
   },
   source: {
     type: String,
@@ -47,7 +52,6 @@ const articleSchema = new mongoose.Schema({
     type: String,
     ref: 'user',
     required: true,
-    select: false,
   },
   createdAt: {
     type: Date,

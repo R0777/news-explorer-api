@@ -19,7 +19,7 @@ const getMe = async (req, res, next) => {
     if (!user) {
       throw new ErrorNotFound('Пользователь не найден');
     }
-    return res.status(200).send(user);
+    return res.status(200).send({ name: user.name, email: user.email });
   } catch (error) {
     return next(error);
   }
