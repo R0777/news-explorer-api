@@ -1,5 +1,5 @@
 # Проект NewsApi бэкенд
-
+https://api.news.students.nomoredomains.work
 ## Директории
 
 `/public` — статика, полученная в результате билда фронтенд-приложения на Реакте  
