@@ -5,7 +5,7 @@ const NotAuthorizeError = require('../errors/notAuthorizeError');
 const ErrorNotFound = require('../errors/errorNotFound');
 const NotAllowToCreateUser = require('../errors/notAllowToCreateUser');
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, NODE_ENV } = process.env;
 
 const User = require('../models/user');
 
@@ -42,7 +42,7 @@ const login = (req, res, next) => {
               id: admin._id,
               email: admin.email,
               name: admin.name,
-            }, JWT_SECRET);
+            }, NODE_ENV === 'production' ? JWT_SECRET : 'nosecret-for-dev');
             return res.status(200).send({ token });
           }
           throw new NotAuthorizeError('Невалидные данные');

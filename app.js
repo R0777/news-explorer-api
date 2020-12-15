@@ -1,6 +1,7 @@
 require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors, celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
@@ -8,12 +9,14 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const article = require('./routes/article.js');
 const users = require('./routes/users.js');
 const auth = require('./middlewares/auth');
+const ErrorNotFound = require('./errors/errorNotFound');
 const { createUser, login } = require('./controllers/users');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, BASE } = process.env;
 const app = express();
+app.use(helmet());
 
-mongoose.connect('mongodb://localhost:27017/newsapidb', {
+mongoose.connect(BASE, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -43,10 +46,8 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/', users);
 app.use('/', article);
-app.use('/', (req, res) => {
-  res.status(404).send({
-    message: 'Запрашиваемый ресурс не найден',
-  });
+app.use('/', () => {
+  throw new ErrorNotFound('Запрашиваемый ресурс не найден');
 });
 
 app.use(errorLogger);

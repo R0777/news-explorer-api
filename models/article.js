@@ -4,12 +4,10 @@ const articleSchema = new mongoose.Schema({
   keyword: {
     type: String,
     required: true,
-    minlength: 2,
   },
   title: {
     type: String,
     required: true,
-    minlength: 2,
   },
   text: {
     type: String,
@@ -18,7 +16,6 @@ const articleSchema = new mongoose.Schema({
   date: {
     type: String,
     required: true,
-    default: Date.now,
   },
   source: {
     type: String,
@@ -52,6 +49,7 @@ const articleSchema = new mongoose.Schema({
     type: String,
     ref: 'user',
     required: true,
+    select: false,
   },
   createdAt: {
     type: Date,
