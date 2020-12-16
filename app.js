@@ -12,11 +12,11 @@ const auth = require('./middlewares/auth');
 const ErrorNotFound = require('./errors/errorNotFound');
 const { createUser, login } = require('./controllers/users');
 
-const { PORT = 3000, BASE } = process.env;
+const { PORT = 3000, BASE, NODE_ENV } = process.env;
 const app = express();
 app.use(helmet());
 
-mongoose.connect(BASE, {
+mongoose.connect(NODE_ENV === 'production' ? BASE : 'mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
