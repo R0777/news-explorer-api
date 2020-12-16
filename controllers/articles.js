@@ -19,7 +19,7 @@ const deleteArticle = async (req, res, next) => {
     if (!article) {
       throw new ErrorNotFound('Такой новости нет');
     }
-    if (article.owner === req.user.id) {
+    if (toString(article.owner) === toString(req.user.id)) {
       await Article.deleteOne(article);
       return res.status(200).send({ message: 'Новость удалена' });
     }
@@ -38,7 +38,17 @@ const createArticle = async (req, res, next) => {
     const card = await Article.create({
       keyword, title, text, date, source, link, image, owner: ownerId,
     });
-    return res.status(200).send(card);
+    return res.status(200).send({
+      _id: card._id,
+      keyword: card.keyword,
+      title: card.title,
+      text: card.text,
+      date: card.date,
+      source: card.source,
+      link: card.link,
+      image: card.image,
+      createdAt: card.createdAt,
+    });
   } catch (error) {
     return next(error);
   }
