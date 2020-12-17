@@ -15,15 +15,15 @@ const getArticles = async (req, res, next) => {
 const deleteArticle = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const article = await Article.findOne({ _id: id });
+    const article = await Article.findOne({ _id: id }).select('+owner');
     if (!article) {
       throw new ErrorNotFound('Такой новости нет');
     }
-    if (toString(article.owner) === toString(req.user.id)) {
-      await Article.deleteOne(article);
-      return res.status(200).send({ message: 'Новость удалена' });
+    if (article.owner.toString() !== req.user.id.toString()) {
+      throw new ForbiddenError('Доступ запрещен');
     }
-    throw new ForbiddenError('Доступ запрещен');
+    await Article.deleteOne(article);
+    return res.status(200).send({ message: 'Новость удалена' });
   } catch (error) {
     return next(error);
   }
